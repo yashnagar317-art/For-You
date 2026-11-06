@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#242b32">
+<title>A Little Note for Anshi</title>
+
+<style>
+:root {
+  --night: #222a31;
+  --night-2: #303b43;
+  --paper: #fbf5e8;
+  --paper-2: #f1e5cc;
+  --ink: #3f392f;
+  --muted: #8c806c;
+  --gold: #c6a66b;
+  --gold-light: #ead6a7;
+  --blue: #718895;
+  --line: rgba(176, 143, 83, .45);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  padding: 30px 16px;
+  font-family: Georgia, "Times New Roman", serif;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(135,157,164,.18), transparent 27%),
+    radial-gradient(circle at 82% 75%, rgba(198,166,107,.13), transparent 30%),
+    linear-gradient(135deg, #20272e, #303a40 52%, #202830);
+  isolation: isolate;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  filter: blur(75px);
+  opacity: .15;
+  pointer-events: none;
+  animation: drift 16s ease-in-out infinite alternate;
+}
+
+body::before {
+  background: #c8aa70;
+  top: -210px;
+  left: -130px;
+}
+
+body::after {
+  background: #7996a1;
+  bottom: -230px;
+  right: -100px;
+  animation-delay: -7s;
+}
+
+@keyframes drift {
+  to {
+    transform: translate(90px, 65px) scale(1.18);
+  }
+}
+
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.spark {
+  position: absolute;
+  bottom: -12px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #f4d99b;
+  box-shadow: 0 0 9px 2px rgba(244,217,155,.35);
+  opacity: 0;
+  animation: rise var(--duration, 12s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes rise {
+  0% {
+    transform: translate3d(0, 0, 0) scale(.5);
+    opacity: 0;
+  }
+
+  12% {
+    opacity: .75;
+  }
+
+  82% {
+    opacity: .45;
+  }
+
+  100% {
+    transform: translate3d(var(--drift, 35px), -110vh, 0) scale(1.3);
+    opacity: 0;
+  }
+}
+
+.scene {
+  width: min(100%, 700px);
+  perspective: 1200px;
+}
+
+.page {
+  display: none;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: clamp(34px, 7vw, 66px) clamp(24px, 7vw, 64px);
+  text-align: center;
+  border-radius: 5px;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at 12% 8%, rgba(255,255,255,.92), transparent 35%),
+    repeating-linear-gradient(0deg, rgba(116,91,52,.022) 0 1px, transparent 1px 4px),
+    linear-gradient(145deg, #fffaf0 0%, var(--paper) 58%, var(--paper-2) 100%);
+  border: 1px solid rgba(234,214,167,.7);
+  box-shadow:
+    0 34px 90px rgba(0,0,0,.3),
+    0 5px 18px rgba(0,0,0,.18),
+    inset 0 0 35px rgba(165,133,77,.06);
+  transform-origin: 50% 60%;
+}
+
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  z-index: -1;
+  border: 1px solid rgba(177,143,83,.32);
+  pointer-events: none;
+}
+
+.page::after {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  right: -110px;
+  top: -110px;
+  border: 1px solid rgba(177,143,83,.13);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 12px rgba(177,143,83,.035),
+    0 0 0 25px rgba(177,143,83,.025);
+  pointer-events: none;
+}
+
+.page.active {
+  display: block;
+  animation: pageIn .85s cubic-bezier(.2,.75,.2,1) both;
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(22px) rotateX(3deg) scale(.985);
+    filter: blur(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.topline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.topline::before,
+.topline::after {
+  content: "";
+  width: 34px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+
+.topline::after {
+  transform: rotate(180deg);
+}
+
+.eyebrow {
+  color: #a28755;
+  text-transform: uppercase;
+  letter-spacing: .24em;
+  font: 10px/1.6 Arial, sans-serif;
+}
+
+h1 {
+  font-size: clamp(30px, 6vw, 47px);
+  font-weight: 400;
+  line-height: 1.16;
+  letter-spacing: -.025em;
+  margin: 10px 0 14px;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.75;
+  margin: 0 auto 20px;
+  max-width: 440px;
+}
+
+.tiny-star {
+  color: var(--gold);
+  display: inline-block;
+  font-size: 17px;
+  margin: 0 5px;
+  animation: twinkle 2.3s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%,100% {
+    opacity: .45;
+    transform: scale(.8) rotate(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2) rotate(35deg);
+  }
+}
+
+/* Animated envelope */
+
+.envelope-wrap {
+  height: 178px;
+  display: grid;
+  place-items: center;
+  margin: 14px auto 12px;
+}
+
+.envelope {
+  position: relative;
+  width: 214px;
+  height: 137px;
+  border-radius: 3px;
+  background: linear-gradient(145deg, #d9c69d, #c5ad7c);
+  border: 1px solid #b69a65;
+  box-shadow:
+    0 18px 28px rgba(88,67,35,.2),
+    inset 0 1px rgba(255,255,255,.45);
+  transform: translateY(0);
+  animation: envelopeFloat 4s ease-in-out infinite;
+}
+
+@keyframes envelopeFloat {
+  0%,100% {
+    transform: translateY(2px) rotate(-.4deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(.4deg);
+  }
+}
+
+.envelope::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background:
+    linear-gradient(145deg, transparent 49.4%, rgba(255,248,225,.72) 50%, transparent 50.8%),
+    linear-gradient(35deg, transparent 49.4%, rgba(255,248,225,.52) 50%, transparent 50.8%);
+  pointer-events: none;
+}
+
+.letter-peek {
+  position: absolute;
+  z-index: 1;
+  left: 18px;
+  right: 18px;
+  top: 10px;
+  height: 100px;
+  background: linear-gradient(#fffaf0, #efe2c8);
+  border: 1px solid rgba(163,132,77,.35);
+  transform: translateY(0);
+  transition: transform .9s cubic-bezier(.2,.8,.2,1);
+}
+
+.letter-peek::before,
+.letter-peek::after {
+  content: "";
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: rgba(164,139,96,.35);
+}
+
+.letter-peek::before {
+  top: 32px;
+}
+
+.letter-peek::after {
+  top: 44px;
+  right: 42px;
+}
+
+.flap {
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 106px solid transparent;
+  border-right: 106px solid transparent;
+  border-top: 77px solid #e6d5b1;
+  transform-origin: top;
+  filter: drop-shadow(0 2px 2px rgba(80,60,30,.13));
+  transition: transform .9s cubic-bezier(.2,.8,.2,1), z-index .1s .35s;
+}
+
+.seal {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: 53px;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #f5ead0;
+  font-size: 13px;
+  background: linear-gradient(145deg, #8298a0, #607681);
+  border: 2px solid rgba(255,255,255,.58);
+  box-shadow:
+    0 3px 8px rgba(0,0,0,.2),
+    0 0 0 4px rgba(255,255,255,.13);
+  transition: opacity .35s, transform .55s;
+}
+
+.envelope.open .flap {
+  transform: rotateX(180deg);
+  z-index: 0;
+}
+
+.envelope.open .letter-peek {
+  transform: translateY(-55px);
+}
+
+.envelope.open .seal {
+  opacity: 0;
+  transform: translate(-50%, 12px) scale(.5);
+}
+
+.form-area {
+  margin-top: 14px;
+  position: relative;
+  z-index: 2;
+}
+
+.field {
+  width: min(100%, 270px);
+  display: block;
+  margin: 0 auto 13px;
+  padding: 14px 16px;
+  border: 1px solid #c8b58f;
+  border-radius: 4px;
+  background: rgba(255,255,255,.64);
+  color: var(--ink);
+  text-align: center;
+  font: 15px Arial, sans-serif;
+  letter-spacing: .28em;
+  outline: none;
+  box-shadow: inset 0 1px 3px rgba(80,60,30,.05);
+  transition: box-shadow .25s, border-color .25s;
+}
+
+.field::placeholder {
+  color: #b0a38c;
+  letter-spacing: .12em;
+  font-size: 12px;
+}
+
+.field:focus {
+  border-color: var(--gold);
+  box-shadow:
+    0 0 0 4px rgba(179,146,88,.13),
+    0 0 20px rgba(179,146,88,.12);
+}
+
+button {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #9d7d49;
+  background: linear-gradient(135deg, #9d865e, #79694d);
+  color: #fffaf0;
+  padding: 14px 27px;
+  border-radius: 3px;
+  cursor: pointer;
+  font: 11px Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .17em;
+  box-shadow: 0 5px 13px rgba(88,67,35,.16);
+  transition: transform .25s, box-shadow .25s, filter .25s;
+}
+
+button::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -70%;
+  width: 45%;
+  height: 200%;
+  transform: rotate(25deg);
+  background: rgba(255,255,255,.18);
+  transition: left .65s;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 9px 19px rgba(88,67,35,.22);
+  filter: brightness(1.06);
+}
+
+button:hover::before {
+  left: 130%;
+}
+
+button:active {
+  transform: translateY(-1px) scale(.99);
+}
+
+.error {
+  min-height: 20px;
+  color: #9b6257;
+  font: 12px Arial, sans-serif;
+  letter-spacing: .01em;
+  margin: 11px 0 0;
+}
+
+.shake {
+  animation: shake .4s ease;
+}
+
+@keyframes shake {
+  0%,100% {
+    transform: translateX(0);
+  }
+
+  20%,60% {
+    transform: translateX(-7px);
+  }
+
+  40%,80% {
+    transform: translateX(7px);
+  }
+}
+
+/* Page two */
+
+.intro-mark {
+  width: 66px;
+  height: 66px;
+  margin: 23px auto 18px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(179,146,88,.5);
+  border-radius: 50%;
+  color: #a68b58;
+  background: radial-gradient(circle, rgba(255,255,255,.9), rgba(236,222,193,.55));
+  box-shadow:
+    0 0 0 7px rgba(179,146,88,.055),
+    0 8px 20px rgba(80,60,30,.08);
+  font-size: 27px;
+  animation: markGlow 3s ease-in-out infinite;
+}
+
+@keyframes markGlow {
+  0%,100% {
+    box-shadow:
+      0 0 0 7px rgba(179,146,88,.055),
+      0 8px 20px rgba(80,60,30,.08);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 12px rgba(179,146,88,.035),
+      0 8px 28px rgba(179,146,88,.18);
+  }
+}
+
+.note {
+  max-width: 480px;
+  margin: 24px auto 32px;
+  padding: 0 4px;
+  color: #62594b;
+  font-size: clamp(17px, 2.8vw, 19px);
+  line-height: 1.9;
+}
+
+.note span {
+  display: block;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+#page2.active .note span {
+  animation: textLift .8s ease forwards;
+}
+
+#page2.active .note span:nth-child(2) {
+  animation-delay: .45s;
+}
+
+@keyframes textLift {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.small-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px auto;
+  color: var(--gold);
+}
+
+.small-rule::before,
+.small-rule::after {
+  content: "";
+  width: 46px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+
+.small-rule::after {
+  transform: rotate(180deg);
+}
+
+/* Page three and four */
+
+#page3,
+#page4 {
+  padding-top: clamp(35px, 6vw, 56px);
+}
+
+.letter-head {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.letter-head .eyebrow {
+  margin-bottom: 9px;
+}
+
+.letter-head h1 {
+  font-size: clamp(31px, 6vw, 45px);
+  margin-bottom: 12px;
+}
+
+.letter-head .small-rule {
+  margin: 15px auto 0;
+}
+
+.letter {
+  text-align: left;
+  max-width: 510px;
+  margin: 0 auto;
+  font-size: clamp(16px, 2.5vw, 18px);
+  line-height: 1.92;
+}
+
+.letter p {
+  margin: 0 0 15px;
+  opacity: 0;
+  transform: translateY(13px);
+}
+
+#page3.active .letter p,
+#page4.active .letter p {
+  animation: inkAppear .75s ease forwards;
+}
+
+#page3.active .letter p:nth-child(2),
+#page4.active .letter p:nth-child(2) {
+  animation-delay: .15s;
+}
+
+#page3.active .letter p:nth-child(3),
+#page4.active .letter p:nth-child(3) {
+  animation-delay: .3s;
+}
+
+#page3.active .letter p:nth-child(4),
+#page4.active .letter p:nth-child(4) {
+  animation-delay: .45s;
+}
+
+#page3.active .letter p:nth-child(5),
+#page4.active .letter p:nth-child(5) {
+  animation-delay: .6s;
+}
+
+#page3.active .letter p:nth-child(6),
+#page4.active .letter p:nth-child(6) {
+  animation-delay: .75s;
+}
+
+#page3.active .letter p:nth-child(7),
+#page4.active .letter p:nth-child(7) {
+  animation-delay: .9s;
+}
+
+#page3.active .letter p:nth-child(8),
+#page4.active .letter p:nth-child(8) {
+  animation-delay: 1.05s;
+}
+
+#page3.active .letter p:nth-child(9),
+#page4.active .letter p:nth-child(9) {
+  animation-delay: 1.2s;
+}
+
+@keyframes inkAppear {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.signature {
+  margin-top: 25px !important;
+  color: #806d4e;
+  font-style: italic;
+}
+
+.footer-mark {
+  margin-top: 28px;
+  color: #a68b58;
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-align: center;
+  opacity: .8;
+}
+
+.page-next {
+  margin-top: 24px;
+}
+
+.progress {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 23px;
+}
+
+.progress i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(179,146,88,.35);
+}
+
+.progress i.on {
+  width: 18px;
+  border-radius: 5px;
+  background: #ad905d;
+}
+
+@media (max-width: 520px) {
+  body {
+    padding: 14px 10px;
+  }
+
+  .page {
+    padding: 37px 25px;
+  }
+
+  .envelope-wrap {
+    height: 164px;
+  }
+
+  .letter {
+    line-height: 1.82;
+  }
+
+  .note {
+    line-height: 1.8;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="ambient" id="ambient" aria-hidden="true"></div>
+
+<main class="scene">
+
+  <!-- PAGE 1: PIN LOCK -->
+
+  <section class="page active" id="page1" aria-labelledby="title1">
+
+    <div class="topline">
+      <span class="eyebrow">A private little surprise</span>
+    </div>
+
+    <h1 id="title1">This Is for Someone Special</h1>
+
+    <p class="subtitle">You are my special person.</p>
+
+    <div class="envelope-wrap" aria-hidden="true">
+      <div class="envelope" id="envelope">
+        <div class="letter-peek"></div>
+        <div class="flap"></div>
+        <div class="seal">✦</div>
+      </div>
+    </div>
+
+    <p class="subtitle">
+      A little note is waiting inside
+      <span class="tiny-star">✦</span>
+    </p>
+
+    <div class="form-area">
+      <form id="pinForm">
+
+        <input
+          class="field"
+          id="pin"
+          type="password"
+          inputmode="numeric"
+          maxlength="7"
+          placeholder="Enter your PIN"
+          aria-label="Enter PIN"
+          autocomplete="off"
+        >
+
+        <button type="submit">Unlock Letter</button>
+
+        <p class="error" id="error" role="status" aria-live="polite"></p>
+
+      </form>
+    </div>
+
+    <div class="progress" aria-label="Page 1 of 4">
+      <i class="on"></i><i></i><i></i><i></i>
+    </div>
+
+  </section>
+
+  <!-- PAGE 2: INTRODUCTION -->
+
+  <section class="page" id="page2" aria-labelledby="title2">
+
+    <div class="topline">
+      <span class="eyebrow">Before you read</span>
+    </div>
+
+    <div class="intro-mark" aria-hidden="true">✧</div>
+
+    <h1 id="title2">I'm Not Joking<br>This Time.</h1>
+
+    <div class="small-rule">✦</div>
+
+    <p class="note">
+      <span>
+        I just want you to know that what you're about to read is genuine.
+        I'm not making fun of you, playing a prank, or saying this as a joke.
+      </span>
+
+      <span>
+        These are my real feelings, and I mean every word.
+      </span>
+    </p>
+
+    <button type="button" id="readLetter">
+      Read My Letter&nbsp; ↗
+    </button>
+
+    <div class="progress" aria-label="Page 2 of 4">
+      <i></i><i class="on"></i><i></i><i></i>
+    </div>
+
+  </section>
+
+  <!-- PAGE 3: LOVE LETTER -->
+
+  <section class="page" id="page3" aria-labelledby="title3">
+
+    <header class="letter-head">
+
+      <div class="eyebrow">A note, just for you</div>
+
+      <h1 id="title3">A Little Note for Anshi</h1>
+
+      <div class="small-rule">✦</div>
+
+    </header>
+
+    <article class="letter">
+
+      <p>Hey Anshi,</p>
+
+      <p>
+        I don't know how to say this perfectly,
+        but I just want to be honest with you.
+      </p>
+
+      <p>
+        I really enjoy talking to you. Your messages make me smile,
+        and even the smallest moments with you feel special.
+      </p>
+
+      <p>
+        Honestly, I think I've started liking you as more than a friend.
+      </p>
+
+      <p>
+        I don't know what you think about me,
+        but I'd really love to know if you feel there's a chance
+        for us to be something more.
+      </p>
+
+      <p>
+        No pressure, okay? I just wanted you to know what's in my heart.
+      </p>
+
+      <p>
+        I hope this little message makes you smile.
+      </p>
+
+      <p class="signature">Your Friend</p>
+
+    </article>
+
+    <div class="footer-mark">
+      MADE WITH SINCERITY · JUST FOR YOU
+    </div>
+
+    <button type="button" class="page-next" id="oneChance">
+      Continue&nbsp; ↗
+    </button>
+
+    <div class="progress" aria-label="Page 3 of 4">
+      <i></i><i></i><i class="on"></i><i></i>
+    </div>
+
+  </section>
+
+  <!-- PAGE 4: JUST ONE CHANCE -->
+
+  <section class="page" id="page4" aria-labelledby="title4">
+
+    <header class="letter-head">
+
+      <div class="eyebrow">One last thing</div>
+
+      <h1 id="title4">Just One Chance</h1>
+
+      <div class="small-rule">✦</div>
+
+    </header>
+
+    <article class="letter">
+
+      <p>Thank You for Reading This, Anshi.</p>
+
+      <p>
+        I hope you understand that I'm not joking.
+        I really mean everything I said.
+      </p>
+
+      <p>
+        I don't know what's in your heart,
+        or whether you've ever thought about me that way.
+        But sometimes I wonder if you could see me
+        as more than just a friend too.
+      </p>
+
+      <p>
+        I'm not asking you to make any promises.
+        I just want to know if there's a little chance
+        that we could give this a try and see where it goes.
+      </p>
+
+      <p>
+        I promise to be honest with you, respect you,
+        and never take your feelings for granted.
+      </p>
+
+      <p>
+        And if you ever feel that maybe we could be something special,
+        I'd be really happy.
+      </p>
+
+      <p>
+        All I'm asking is… would you give me just one chance? ❤️
+      </p>
+
+      <p class="signature">— Your Friend</p>
+
+    </article>
+
+    <div class="footer-mark">
+      MADE WITH SINCERITY · JUST FOR YOU
+    </div>
+
+    <div class="progress" aria-label="Page 4 of 4">
+      <i></i><i></i><i></i><i class="on"></i>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+
+// Animated golden dust
+
+const ambient = document.getElementById('ambient');
+
+for (let i = 0; i < 30; i++) {
+
+  const dot = document.createElement('span');
+
+  dot.className = 'spark';
+
+  dot.style.left = (Math.random() * 100) + '%';
+
+  dot.style.setProperty(
+    '--duration',
+    (9 + Math.random() * 13) + 's'
+  );
+
+  dot.style.setProperty(
+    '--delay',
+    (-Math.random() * 20) + 's'
+  );
+
+  dot.style.setProperty(
+    '--drift',
+    ((Math.random() * 100) - 50) + 'px'
+  );
+
+  dot.style.opacity = String(.25 + Math.random() * .5);
+
+  if (i % 5 === 0) {
+    dot.style.width = '4px';
+    dot.style.height = '4px';
+  }
+
+  ambient.appendChild(dot);
+
+}
+
+// PIN CODE
+
+const correctPin = '5201314';
+
+const pageIds = [
+  'page1',
+  'page2',
+  'page3',
+  'page4'
+];
+
+// Page navigation
+
+function showPage(number) {
+
+  pageIds.forEach((id, index) => {
+
+    const page = document.getElementById(id);
+
+    page.classList.remove('active');
+
+    if (index === number - 1) {
+
+      void page.offsetWidth;
+
+      page.classList.add('active');
+
+    }
+
+  });
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+// PIN form
+
+document.getElementById('pinForm').addEventListener(
+  'submit',
+  function (event) {
+
+    event.preventDefault();
+
+    const input = document.getElementById('pin');
+
+    const error = document.getElementById('error');
+
+    const envelope = document.getElementById('envelope');
+
+    if (input.value.trim() === correctPin) {
+
+      error.textContent = '';
+
+      envelope.classList.add('open');
+
+      const button = this.querySelector('button');
+
+      button.disabled = true;
+
+      button.textContent = 'Opening...';
+
+      setTimeout(() => showPage(2), 1050);
+
+    } else {
+
+      error.textContent =
+        "You're really not the right person... try again.";
+
+      input.value = '';
+
+      input.focus();
+
+      const card = document.getElementById('page1');
+
+      card.classList.remove('shake');
+
+      void card.offsetWidth;
+
+      card.classList.add('shake');
+
+    }
+
+  }
+);
+
+// Page 2 to Page 3
+
+document.getElementById('readLetter').addEventListener(
+  'click',
+  () => showPage(3)
+);
+
+// Page 3 to Page 4
+
+document.getElementById('oneChance').addEventListener(
+  'click',
+  () => showPage(4)
+);
+
+</script>
+
+</body>
+</html>
